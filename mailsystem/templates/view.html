@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Messages</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url("static/VI.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      color: #333;
+    }
+
+    header {
+      position: relative;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 10px;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    section.messages {
+      padding: 40px 0;
+      background-color: rgba(255, 255, 255, 0.8);
+      position: relative;
+      z-index: 1;
+    }
+
+    section.messages .container {
+      text-align: center;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    section.messages h2 {
+      margin-bottom: 20px;
+      color: #007BFF;
+    }
+
+    .message-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      justify-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .message {
+      background-color: rgba(255, 255, 255, 1);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .message-content {
+      flex: 1;
+    }
+
+    .message-actions {
+      margin-left: 20px;
+    }
+
+    .message p {
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .btn-edit,
+    .btn-delete {
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    .btn-delete {
+      background-color: #dc3545;
+    }
+
+    .btn-edit:hover,
+    .btn-delete:hover {
+      opacity: 0.8;
+    }
+
+    .comment-section {
+      margin-top: 20px;
+    }
+
+    .comment-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .comment-list li {
+      margin-bottom: 10px;
+    }
+
+    .like-reaction {
+      margin-top: 20px;
+    }
+
+    .btn-like {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .like-count {
+      margin-left: 10px;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <ul>
+          <li><a href="/home">Create POST</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="messages">
+    <div class="container">
+      <h2>View Messages</h2>
+      <div class="message-list">
+        {% for message in sent_messages %}
+        <div class="message">
+          <div class="message-content">
+            <p><strong>Recipient:</strong> {{ message.recipient }}</p>
+            <p><strong>Subject:</strong> {{ message.subject }}</p>
+            <p><strong>Message:</strong> {{ message.message }}</p>
+          </div>
+          <div class="message-actions">
+            <form action="/edit/{{ message.id }}" method="GET" style="display: inline;">
+              <button type="submit" class="btn-edit">Edit</button>
+            </form>
+            <form action="/delete/{{ message.id }}" method="POST" style="display: inline;">
+              <button type="submit" class="btn-delete">Delete</button>
+            </form>
+          </div>
+        </div>
+        <!-- Comment Section -->
+        <div class="comment-section">
+          <h3>Comments</h3>
+          <form action="/comment/{{ message.id }}" method="POST">
+            <textarea name="comment" placeholder="Write your comment here..." required></textarea>
+            <button type="submit" class="btn-comment">Post Comment</button>
+          </form>
+          <ul class="comment-list">
+            {% for comment in message.comments %}
+            <li>{{ comment }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <!-- Like Reaction -->
+        <div class="like-reaction">
+          <form action="/like/{{ message.id }}" method="POST">
+            <button type="submit" class="btn-like">Like</button>
+            <span class="like-count">{{ message.likes }}</span> Likes
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <marquee>WELCOME TO OT-CHAT-PA</marquee>
+    </div>
+  </footer>
+</body>
+
+</html>
